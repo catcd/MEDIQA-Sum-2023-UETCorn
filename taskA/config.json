@@ -1,0 +1,11 @@
+{
+  "run1": {
+    "model_th": 0
+  },
+  "run2": {
+    "model_cc_url": "./pretrained_pipelines/cc_model_v1.bin"
+  },
+  "run3": {
+    "model_th": 0
+  }
+}

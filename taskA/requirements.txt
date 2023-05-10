@@ -1,0 +1,9 @@
+numpy
+pandas
+scipy
+scikit-learn
+spacy
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.5.0/en_core_web_sm-3.5.0-py3-none-any.whl#sha256=0964370218b7e1672a30ac50d72cdc6b16f7c867496f1d60925691188f4d2510
+lightgbm
+sentence-transformers
+torch
