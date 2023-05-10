@@ -1,0 +1,1099 @@
+{
+  "read_dataset": {
+    "exceptions": [
+      [
+        "Doctor: First let's go back to your medical history a little bit and then we will continue with the result. Patient",
+        "Doctor: First let's go back to your medical history a little bit and then we will continue with the result. \\r\\nPatient"
+      ],
+      [
+        "Docotr_2",
+        "Doctor_2"
+      ],
+      [
+        "Gest_family",
+        "Guest_family"
+      ],
+      [
+        "Patient: Yes, I am, Doctor:",
+        "Patient: Yes, I am, \\r\\nDoctor:"
+      ],
+      [
+        "Guest_family2",
+        "Guest_family_2"
+      ],
+      [
+        "Patient Sometimes it is",
+        "Patient: Sometimes it is"
+      ]
+    ]
+  },
+  "preprocessing": {
+    "CLEAN_CONTRACTIONS": {
+      "ca n't": "can not",
+      "wo not": "will not",
+      "n't": "not",
+      "could've": "could have",
+      "i'm": "i am",
+      "i've": "i have",
+      "might've": "might have",
+      "must've": "must have",
+      "shan't": "shall not",
+      "should've": "should have",
+      "they're": "they are",
+      "they've": "they have",
+      "wasn't": "was not",
+      "we're": "we are",
+      "we've": "we have",
+      "what're": "what are",
+      "what've": "what have",
+      "who're": "who are",
+      "who've": "who have",
+      "would've": "would have",
+      "you're": "you are",
+      "you've": "you have",
+      "gonna": "going to",
+      "gon'na": "going to",
+      "gon na": "going to",
+      "gotta": "got to",
+      "wanna": "want to",
+      "wan'na": "want to",
+      "wan na": "want to",
+      "hafta": "have to",
+      "hadta": "had to",
+      "shoulda": "should have",
+      "woulda": "would have",
+      "coulda": "could have",
+      "mighta": "might have",
+      "musta": "must have",
+      "oughta": "ought to",
+      "dont": "do not",
+      "doesnt": "does not"
+    },
+    "PRONOUNS_CONTRACTIONS": {
+      ", you know ?": ",",
+      ", you know ,": ",",
+      ", you know,": ",",
+      "you know ,": "",
+      "you know,": "",
+      "\bi have\b": "the patient has",
+      "\bi've\b": "the patient has",
+      "\bi am\b": "the patient is",
+      "\bi'm\b": "the patient is",
+      "\bi'd\b": "the patient would",
+      "\bi\b": "the patient",
+      "\bme\b": "the patient",
+      "\bmy\b": "his / her"
+    },
+    "start_patterns": [
+      "^((okay|um|and|well) ?,? (hey|so|now) |so ?, |hey ?,)",
+      "(let's|any questions|any other questions)",
+      "(-year-old|physical exam|my assessment and my plan|assessment and plan|review of system|review of the system|review system|review of systems|review of the systems|review systems|surgical history|social history|review of symptoms|past reading)"
+    ],
+    "end_patterns": [
+      "(all right|alright|alrighty) ?\\.$"
+    ],
+    "notend_patterns": [
+      "mm+-?hmm+"
+    ],
+    "question_patterns": [
+      "\\?$",
+      "(this|that|these|those)"
+    ]
+  },
+  "no_BEAM_form_retrieval": {
+    "seeding_form": [
+      {
+        "division": "subjective",
+        "title": "CHIEF COMPLAINT"
+      },
+      {
+        "division": "objective_exam",
+        "title": "PHYSICAL EXAM",
+        "point": "Neurologic / NEURO",
+        "retrieval": {
+          "query": [
+            "neurologic",
+            "psychological",
+            "sensation",
+            "mood",
+            "bilateral biceps",
+            "triceps",
+            "brachioradialis",
+            "reflexes bilaterally",
+            "deltoid",
+            "grip strength"
+          ],
+          "min_score": 15,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prefix": "Neurologic: {answer1}",
+          "question": "What is neurologic proplem?",
+          "method": "question_extract_then_fill",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "objective_exam",
+        "title": "PHYSICAL EXAM",
+        "point": "Neck",
+        "retrieval": {
+          "query": [
+            "neck",
+            "thyromegaly",
+            "thyroid",
+            "lymph",
+            "supple"
+          ],
+          "min_score": 16,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prefix": "Neck: {answer1}",
+          "question": "What is neck proplem?",
+          "method": "question_extract_then_fill",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "HISTORY OF PRESENT ILLNESS",
+        "retrieval": {
+          "query": [
+            "details about the current illness or medical condition",
+            "onset factors",
+            "duration factors",
+            "severity factors",
+            "exacerbating factors",
+            "relieving factors",
+            "associated symptoms",
+            "past medical history"
+          ],
+          "min_score": 3,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "max_length": 250,
+          "min_length": 150,
+          "model": "amagzari/bart-large-xsum-finetuned-samsum-v2",
+          "method": "summarize",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "assessment_and_plan",
+        "title": "ASSESSMENT",
+        "retrieval": {
+          "query": [
+            "assessment",
+            "plan",
+            "diagnosis",
+            "is a 100-year-old male",
+            "is a 100-year-old male"
+          ],
+          "max_group": 3,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "diagnosis: ",
+          "max_length": 30,
+          "min_length": 1,
+          "model": "amagzari/bart-large-xsum-finetuned-samsum-v2",
+          "method": "summarize",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "objective_exam",
+        "title": "PHYSICAL EXAM",
+        "point": "Gastrointestinal",
+        "retrieval": {
+          "query": [
+            "physical examination",
+            "gastrointestinal",
+            "examination of abdomen",
+            "upper quadrant",
+            "low quadrant"
+          ],
+          "min_score": 15,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "Gastrointestinal: ",
+          "max_length": 100,
+          "min_length": 15,
+          "model": "lidiya/bart-large-xsum-samsum",
+          "method": "summarize",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "PAST HISTORY",
+        "point": "Medications",
+        "retrieval": {
+          "query": [
+            "names of medication used",
+            "past medications",
+            "medications tried to use"
+          ],
+          "min_score": 15,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "Medications ",
+          "max_length": 50,
+          "min_length": 10,
+          "model": "philschmid/bart-large-cnn-samsum",
+          "method": "summarize",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "CURRENT MEDICATIONS",
+        "retrieval": {
+          "query": [
+            "current medication",
+            "tablet",
+            "pill",
+            "pharmaceutical drugs"
+          ],
+          "max_group": 4,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "Current medication list: ",
+          "max_length": 40,
+          "min_length": 1,
+          "model": "lidiya/bart-large-xsum-samsum",
+          "method": "summarize",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "PAST MEDICAL HISTORY",
+        "retrieval": {
+          "query": [
+            "past medical history relevant patient's current condition",
+            "past diseases",
+            "past symtoms"
+          ],
+          "min_score": 10,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "Patient reports ",
+          "max_length": 80,
+          "min_length": 10,
+          "model": "lidiya/bart-large-xsum-samsum",
+          "method": "summarize",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "objective_exam",
+        "title": "PHYSICAL EXAM",
+        "point": "Constitutional",
+        "retrieval": {
+          "query": [
+            "patient's overall health status",
+            "physical characteristics"
+          ],
+          "min_score": 15,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "Constitutional: ",
+          "max_length": 20,
+          "min_length": 10,
+          "model": "amagzari/bart-large-xsum-finetuned-samsum-v2",
+          "prefix": "{answer}  in no apparent distress",
+          "method": "summarize",
+          "remove_prompt": 1,
+          "device": "auto"
+        }
+      },
+      {
+        "division": "objective_exam",
+        "title": "VITALS REVIEWED",
+        "point": "Blood Pressure",
+        "retrieval": {
+          "query": "blood pressure",
+          "min_score": 25,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "Blood pressure today: ",
+          "max_length": 15,
+          "min_length": 1,
+          "model": "amagzari/bart-large-xsum-finetuned-samsum-v2",
+          "prefix": "Blood Pressure: {answer}",
+          "method": "summarize",
+          "remove_prompt": 1,
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "VITALS",
+        "point": "Weight",
+        "retrieval": {
+          "query": "weight",
+          "min_score": 21,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prefix": "Weight: {answer1}.",
+          "question": "What is the weight of patient?",
+          "method": "question_extract_then_fill",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "VITALS",
+        "point": "Height",
+        "retrieval": {
+          "query": "height",
+          "min_score": 20,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prefix": "Height: {answer1}.",
+          "question": "What is the height of patient?",
+          "method": "question_extract_then_fill",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "MEDICATIONS",
+        "retrieval": {
+          "query": [
+            "medication",
+            "tablet",
+            "pill",
+            "antibiotic",
+            "pharmaceutical drugs"
+          ],
+          "min_score": 15,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "Treatment medication list: patient is taking ",
+          "max_length": 30,
+          "min_length": 1,
+          "model": "amagzari/bart-large-xsum-finetuned-samsum-v2",
+          "prefix": "Patient reports taking {answer}",
+          "method": "summarize",
+          "remove_prompt": 1,
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "PAST HISTORY",
+        "point": "Medical",
+        "retrieval": {
+          "query": [
+            "past medical conditions",
+            "past medical history relevant patient's current condition",
+            "under the plan"
+          ],
+          "min_score": 15,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "Medical ",
+          "max_length": 100,
+          "min_length": 10,
+          "model": "amagzari/bart-large-xsum-finetuned-samsum-v2",
+          "method": "summarize",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "objective_exam",
+        "title": "PHYSICAL EXAM",
+        "point": "Respiratory",
+        "retrieval": {
+          "query": [
+            "lungs",
+            "lung"
+          ],
+          "min_score": 15,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prefix": "Respiratory: Lungs are {answer1}.",
+          "question": "How are lungs characteristics?",
+          "method": "question_extract_then_fill",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "assessment_and_plan",
+        "title": "ASSESSMENT AND PLAN",
+        "summarizer": {
+          "column": "fixed_role_dialogue",
+          "method": "naive_extract_after_terms",
+          "exceptions": [
+            "plant",
+            "planning to take a vacation"
+          ],
+          "device": "auto",
+          "callback": "remove_noisy_sentence",
+          "callback_kwargs": {
+            "wanted_like_sentences": [
+              "medication",
+              "assessment and plan",
+              "health",
+              "body system",
+              "test results"
+            ],
+            "spoken_terms": [
+              "[^.?!,]*questions[^\\n?\\.]*[?\\.\\n]"
+            ],
+            "unwanted_like_sentences": [
+              "nice to see you",
+              "see you",
+              "okay, all right.",
+              "and i am",
+              "that sounds fine.",
+              "finalize the note",
+              "no question thanks",
+              "do you have any questions about that",
+              "good bye",
+              "you got it.",
+              "do you have any question?",
+              "done",
+              "does that sound good to you?",
+              "thank you.but you know that you can contact me if you, if you need anything,",
+              "not now"
+            ],
+            "pos_thresh": 0.05,
+            "neg_thresh": 0.65,
+            "use_soft_cutoff": true,
+            "drop_roles": [
+              "patient"
+            ]
+          },
+          "suffix": "\nPatient Agreements: The patient understands and agrees with the recommended medical treatment plan."
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "MEDICAL HISTORY",
+        "retrieval": {
+          "query": [
+            "past medical history",
+            "anamnesis",
+            "health problems history"
+          ],
+          "max_group": 3,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "Medical History: ",
+          "max_length": 50,
+          "min_length": 1,
+          "model": "amagzari/bart-large-xsum-finetuned-samsum-v2",
+          "prefix": "Patient reports history of {answer}",
+          "method": "summarize",
+          "remove_prompt": 1,
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "VITALS",
+        "point": "Blood pressure / BP",
+        "retrieval": {
+          "query": "blood pressure",
+          "min_score": 26,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prefix": "Blood pressure: {answer1}",
+          "question": "What is the blood pressure of patient?",
+          "method": "question_extract_then_fill",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "VITALS",
+        "point": "Respirations / Respiratory rate / RR",
+        "retrieval": {
+          "query": "respiratory rate",
+          "min_score": 25,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prefix": "Respiratory rate: {answer1}.",
+          "question": "What is the respirations (respiratory rate) of patient?",
+          "method": "question_extract_then_fill",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "ALLERGIES",
+        "retrieval": {
+          "query": [
+            "allergy",
+            "allergic to",
+            "reaction to"
+          ],
+          "max_group": 1,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "The patient is allergic to ",
+          "max_length": 20,
+          "min_length": 1,
+          "model": "amagzari/bart-large-xsum-finetuned-samsum-v2",
+          "method": "summarize",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "SOCIAL HISTORY",
+        "retrieval": {
+          "query": [
+            "occupation",
+            "habit",
+            "hobby",
+            "social history"
+          ],
+          "min_score": 14,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "Patient reports ",
+          "max_length": 80,
+          "min_length": 10,
+          "model": "lidiya/bart-large-xsum-samsum",
+          "method": "summarize",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "VITALS",
+        "point": "Pulse oxygenation/ SpO2/Oxygen saturation",
+        "retrieval": {
+          "query": [
+            "percent of oxygen saturation",
+            "pulse oxygenation"
+          ],
+          "min_score": 21,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prefix": "Pulse oxygenation: {answer1}.",
+          "question": "What is the oxygen saturation (SpO2)?",
+          "method": "question_extract_then_fill",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "objective_exam",
+        "title": "PHYSICAL EXAM",
+        "point": "Cardiovascular / CV",
+        "retrieval": {
+          "query": [
+            "heart",
+            "blood vessels",
+            "circulation",
+            "systolic ejection murmur"
+          ],
+          "min_score": 15,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prefix": "Cardiovascular: {answer1} systolic ejection murmur",
+          "question": "What is a number of systolic ejection murmurs?",
+          "method": "question_extract_then_fill",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "objective_results",
+        "title": "RESULTS",
+        "retrieval": {
+          "query": [
+            "results",
+            "x-ray"
+          ],
+          "min_score": 16,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "max_length": 80,
+          "min_length": 10,
+          "model": "amagzari/bart-large-xsum-finetuned-samsum-v2",
+          "method": "summarize",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "FAMILY HISTORY",
+        "retrieval": {
+          "query": [
+            "family history",
+            "family health"
+          ],
+          "min_score": 15,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "Family History: ",
+          "max_length": 100,
+          "min_length": 1,
+          "model": "amagzari/bart-large-xsum-finetuned-samsum-v2",
+          "method": "summarize",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "objective_exam",
+        "title": "PHYSICAL EXAM",
+        "point": "Musculoskeletal / MSK ",
+        "retrieval": {
+          "query": [
+            "musculoskeletal",
+            "bones",
+            "muscles",
+            "ligaments",
+            "range of motion",
+            "palpation",
+            "muscle strength",
+            "joint stability"
+          ],
+          "min_score": 15,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "Musculoskeletal: ",
+          "max_length": 100,
+          "min_length": 15,
+          "model": "amagzari/bart-large-xsum-finetuned-samsum-v2",
+          "method": "summarize",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "VITALS",
+        "point": "Temperature",
+        "retrieval": {
+          "query": "temperature",
+          "min_score": 26,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prefix": "Temperature: {answer1} degrees.",
+          "question": "What is the temperature of patient?",
+          "method": "question_extract_then_fill",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "PAST SURGICAL HISTORY",
+        "retrieval": {
+          "query": [
+            "past surgical information",
+            "surgeon name",
+            "doctor did surgeon"
+          ],
+          "min_score": 12,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "Patient reports ",
+          "max_length": 100,
+          "min_length": 10,
+          "model": "amagzari/bart-large-xsum-finetuned-samsum-v2",
+          "method": "summarize",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "VITALS",
+        "point": "Heart rate / HR/ Pulse:",
+        "retrieval": {
+          "query": [
+            "heart rate",
+            "pulse"
+          ],
+          "min_score": 26,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prefix": "Heart rate: {answer1} bpm.",
+          "question": "What is the heart rate of patient?",
+          "method": "question_extract_then_fill",
+          "device": "auto"
+        }
+      },
+      {
+        "division": "subjective",
+        "title": "PAST HISTORY",
+        "point": "Surgical",
+        "retrieval": {
+          "query": "surgical history",
+          "min_score": 20,
+          "intra_group_max_pooling": 1,
+          "use_group": 0,
+          "drop_noisy_sentence": 1,
+          "simple_sent_split": 0
+        },
+        "summarizer": {
+          "prompt": "Surgical ",
+          "max_length": 50,
+          "min_length": 10,
+          "model": "philschmid/bart-large-cnn-samsum",
+          "method": "summarize",
+          "device": "auto"
+        }
+      }
+    ]
+  },
+  "postprocessing": {
+    "FULL_CONTRACTIONS": {
+  "\\bhigh blood pressure\\b": "hypertension",
+  "\\bhep c\\b": "hepatitis c",
+  "\\bchf\\b": "congestive heart failure",
+  "\\betoside\\b": "etoposide",
+  "\\regulin\\b": "reglan",
+  "\\bcisplestan\\b": "cisplatin",
+  "\\bfollowup\\b": "follow up",
+  "\\ba day\\b": "daily",
+  "\\bmilligram(s)?\\b": "mg",
+  "\\bmilliram(s)?\\b": "mg",
+  "\\bkilogram(s)?\\b": "kg",
+  "\\bgram(s)?\\b": "g",
+  "\\bpound(s)?\\b": "lb",
+  "\\bounce(s)?\\b": "oz",
+  "\\spercent\\b": "%",
+  "\\btwenty-one\\b": "21",
+  "\\btwenty-two\\b": "22",
+  "\\btwenty-three\\b": "23",
+  "\\btwenty-four\\b": "24",
+  "\\btwenty-five\\b": "25",
+  "\\btwenty-six\\b": "26",
+  "\\btwenty-seven\\b": "27",
+  "\\btwenty-eight\\b": "28",
+  "\\btwenty-nine\\b": "29",
+  "\\bthirty-one\\b": "31",
+  "\\bthirty-two\\b": "32",
+  "\\bthirty-three\\b": "33",
+  "\\bthirty-four\\b": "34",
+  "\\bthirty-five\\b": "35",
+  "\\bthirty-six\\b": "36",
+  "\\bthirty-seven\\b": "37",
+  "\\bthirty-eight\\b": "38",
+  "\\bthirty-nine\\b": "39",
+  "\\bforty-one\\b": "41",
+  "\\bforty-two\\b": "42",
+  "\\bforty-three\\b": "43",
+  "\\bforty-four\\b": "44",
+  "\\bforty-five\\b": "45",
+  "\\bforty-six\\b": "46",
+  "\\bforty-seven\\b": "47",
+  "\\bforty-eight\\b": "48",
+  "\\bforty-nine\\b": "49",
+  "\\bfifty-one\\b": "51",
+  "\\bfifty-two\\b": "52",
+  "\\bfifty-three\\b": "53",
+  "\\bfifty-four\\b": "54",
+  "\\bfifty-five\\b": "55",
+  "\\bfifty-six\\b": "56",
+  "\\bfifty-seven\\b": "57",
+  "\\bfifty-eight\\b": "58",
+  "\\bfifty-nine\\b": "59",
+  "\\bsixty-one\\b": "61",
+  "\\bsixty-two\\b": "62",
+  "\\bsixty-three\\b": "63",
+  "\\bsixty-four\\b": "64",
+  "\\bsixty-five\\b": "65",
+  "\\bsixty-six\\b": "66",
+  "\\bsixty-seven\\b": "67",
+  "\\bsixty-eight\\b": "68",
+  "\\bsixty-nine\\b": "69",
+  "\\bseventy-one\\b": "71",
+  "\\bseventy-two\\b": "72",
+  "\\bseventy-three\\b": "73",
+  "\\bseventy-four\\b": "74",
+  "\\bseventy-five\\b": "75",
+  "\\bseventy-six\\b": "76",
+  "\\bseventy-seven\\b": "77",
+  "\\bseventy-eight\\b": "78",
+  "\\bseventy-nine\\b": "79",
+  "\\beighty-one\\b": "81",
+  "\\beighty-two\\b": "82",
+  "\\beighty-three\\b": "83",
+  "\\beighty-four\\b": "84",
+  "\\beighty-five\\b": "85",
+  "\\beighty-six\\b": "86",
+  "\\beighty-seven\\b": "87",
+  "\\beighty-eight\\b": "88",
+  "\\beighty-nine\\b": "89",
+  "\\bninety-one\\b": "91",
+  "\\bninety-two\\b": "92",
+  "\\bninety-three\\b": "93",
+  "\\bninety-four\\b": "94",
+  "\\bninety-five\\b": "95",
+  "\\bninety-six\\b": "96",
+  "\\bninety-seven\\b": "97",
+  "\\bninety-eight\\b": "98",
+  "\\bninety-nine\\b": "99",
+  "\\beleven\\b": "11",
+  "\\btwelve\\b": "12",
+  "\\bthirteen\\b": "13",
+  "\\bfourteen\\b": "14",
+  "\\bfifteen\\b": "15",
+  "\\bsixteen\\b": "16",
+  "\\bseventeen\\b": "17",
+  "\\beighteen\\b": "18",
+  "\\bnineteen\\b": "19",
+  "\\btwenty one\\b": "21",
+  "\\btwenty two\\b": "22",
+  "\\btwenty three\\b": "23",
+  "\\btwenty four\\b": "24",
+  "\\btwenty five\\b": "25",
+  "\\btwenty six\\b": "26",
+  "\\btwenty seven\\b": "27",
+  "\\btwenty eight\\b": "28",
+  "\\btwenty nine\\b": "29",
+  "\\bthirty one\\b": "31",
+  "\\bthirty two\\b": "32",
+  "\\bthirty three\\b": "33",
+  "\\bthirty four\\b": "34",
+  "\\bthirty five\\b": "35",
+  "\\bthirty six\\b": "36",
+  "\\bthirty seven\\b": "37",
+  "\\bthirty eight\\b": "38",
+  "\\bthirty nine\\b": "39",
+  "\\bforty one\\b": "41",
+  "\\bforty two\\b": "42",
+  "\\bforty three\\b": "43",
+  "\\bforty four\\b": "44",
+  "\\bforty five\\b": "45",
+  "\\bforty six\\b": "46",
+  "\\bforty seven\\b": "47",
+  "\\bforty eight\\b": "48",
+  "\\bforty nine\\b": "49",
+  "\\bfifty one\\b": "51",
+  "\\bfifty two\\b": "52",
+  "\\bfifty three\\b": "53",
+  "\\bfifty four\\b": "54",
+  "\\bfifty five\\b": "55",
+  "\\bfifty six\\b": "56",
+  "\\bfifty seven\\b": "57",
+  "\\bfifty eight\\b": "58",
+  "\\bfifty nine\\b": "59",
+  "\\bsixty one\\b": "61",
+  "\\bsixty two\\b": "62",
+  "\\bsixty three\\b": "63",
+  "\\bsixty four\\b": "64",
+  "\\bsixty five\\b": "65",
+  "\\bsixty six\\b": "66",
+  "\\bsixty seven\\b": "67",
+  "\\bsixty eight\\b": "68",
+  "\\bsixty nine\\b": "69",
+  "\\bseventy one\\b": "71",
+  "\\bseventy two\\b": "72",
+  "\\bseventy three\\b": "73",
+  "\\bseventy four\\b": "74",
+  "\\bseventy five\\b": "75",
+  "\\bseventy six\\b": "76",
+  "\\bseventy seven\\b": "77",
+  "\\bseventy eight\\b": "78",
+  "\\bseventy nine\\b": "79",
+  "\\beighty one\\b": "81",
+  "\\beighty two\\b": "82",
+  "\\beighty three\\b": "83",
+  "\\beighty four\\b": "84",
+  "\\beighty five\\b": "85",
+  "\\beighty six\\b": "86",
+  "\\beighty seven\\b": "87",
+  "\\beighty eight\\b": "88",
+  "\\beighty nine\\b": "89",
+  "\\bninety one\\b": "91",
+  "\\bninety two\\b": "92",
+  "\\bninety three\\b": "93",
+  "\\bninety four\\b": "94",
+  "\\bninety five\\b": "95",
+  "\\bninety six\\b": "96",
+  "\\bninety seven\\b": "97",
+  "\\bninety eight\\b": "98",
+  "\\bninety nine\\b": "99",
+  "\\bone hundred\\b": "100",
+  "\\ba hundred\\b": "100",
+  "\\btwo hundred\\b": "200",
+  "\\bthree hundred\\b": "300",
+  "\\bfour hundred\\b": "400",
+  "\\bfive hundred\\b": "500",
+  "\\bsix hundred\\b": "600",
+  "\\bseven hundred\\b": "700",
+  "\\beight hundred\\b": "800",
+  "\\bnine hundred\\b": "900",
+  "\\ba thousand\\b": "1000",
+  "\\beighties\\b": "80s",
+  "\\bone\\b": "1",
+  "\\btwo\\b": "2",
+  "\\bthree\\b": "3",
+  "\\bfour\\b": "4",
+  "\\bfive\\b": "5",
+  "\\bsix\\b": "6",
+  "\\bseven\\b": "7",
+  "\\beight\\b": "8",
+  "\\bnine\\b": "9",
+  "\\bten\\b": "10",
+  "\\btwenty\\b": "20",
+  "\\bthirty\\b": "30",
+  "\\bforty\\b": "40",
+  "\\bfifty\\b": "50",
+  "\\bsixty\\b": "60",
+  "\\bseventy\\b": "70",
+  "\\beighty\\b": "80",
+  "\\bninety\\b": "90",
+  "(\\d+)\\s+over\\s+(\\d+)": "\\1/\\2",
+  "(\\d+)\\s+\\.\\s+(\\d+)": "\\1.\\2",
+  "do you have any question[^\\n?\\.]*[?\\.\\n]": "",
+  "([?\\.\\n])[^\\n?\\.]*(questions|more question|thanks? )[^\\n?\\.]*[?\\.\\n]": "\\1",
+  "(?!.*(continue|increase|recommend|keep|ekg|blood|prescribe))((so( what)?|and) )?i am going to(( \\w+){0,3}( and) \\w+|( \\w+){0,3})( (to|another|a(n)?))?": "",
+  "((so( what)?|and) )?i am going to( ((just )?go ahead( and)?|call me( and then)?|do is (\\w+)|have you|order|))*": "",
+  "(?!.*(continue|increase|prescribe|blood|stick|dehydration|watch))((so( what)?|and) )?i( (do|really|not|also|just|would))* (want(ed)? you|want(ed)?)( to)?(( \\w+){0,3}( and) \\w+|( \\w+){0,3})( (to|another|a))?": "",
+  "((so( what)?|and) )?i( (do|really|not|also|just|would))* (want(ed)? you|want(ed)?)( to)?( ((just )?go ahead( and)?|call me( and then)?|do is (\\w+)|have you|order|))*": "",
+  "(?!\\n?.*(procedure|follow[ -]up|dose|prescribe))([?\\.\\n])[^\\n?\\.]*i\\'ll[^\\n?\\.]*[?\\.\\n]": "\\2",
+  "prescribe you": "prescribed the patient",
+  "(((as far )?as|so|what|which|do) )?you know( (what|is))?": "",
+  "do you have any question[^\\n\\?\\.]*[\\?\\.\\n]": "",
+  "([\\?\\.\\n])[^\\n\\?\\.]*(questions|more question|thanks? )[^\\n\\?\\.]*[\\?\\.\\n]": "\\1",
+  "(?!\\n?.*(procedure|follow[ -]up|dose|prescribe))([\\?\\.\\n])[^\\n\\?\\.]*i\\'ll[^\\n\\?\\.]*[\\?\\.\\n]": "\\2",
+  "how are you (feeling right now\\?|doing,)": "",
+  "you have": "the patient has",
+  "you( are|\\'re)": "the patient is",
+  "you do": "the patient does",
+  "(you|you guys)\\b": "the patient",
+  "your": "the patient's",
+  "(?![^?]*\\b(blood|recommended|taking|surgical|flu|fever|vaccine|keeping up|smok(ing|ed|e)|hurt|pain|motion|steroids?|ibuprofen|gout)\\b)([\\n\\?\\.])[^\\n\\?\\.]*\\?": "\\2",
+  "(?<!(...as|going|doing) )((\\bum|(\\bum )?well|(so )?okay|great|yeah|(so )?all right(-y)?|(so )?alright|\\bso( and)?|\\buh|(so )?first of all), ?)+": "",
+  ", okay\\.": ".",
+  "hey,? dragon,?( finalize the note\\.)?": "",
+  "\\n{3,}": "\\n\\n",
+  "(\\s) +": "\\1",
+  " *([\\.,])( ?[\\.,])+": "\\1"
+},
+    "BP_CONTRACTIONS": {
+      "\\bhigh\\b": "elevated",
+      "(\\d+)/(\\d+)(\\s*)$": "\\1/\\2 mmHg",
+      "(\\d+)/(\\d+)(\\.)$": "\\1/\\2 mmHg"
+    },
+    "HEART_RATE_CONTRACTIONS": {
+      "(.*)(\\d+)(\\s*)$": "(.*)(\\d+) bpm"
+    },
+    "SPO2_CONTRACTIONS": {
+      "(.*)(\\d+)(\\s*)$": "\\g<0>%"
+    },
+    "RESPIRATORY_CONTRACTIONS": {
+      "(.*)(\\d+)(\\s*)$": "\\g<0> breathes per minute"
+    },
+    "TEMPERATURE_CONTRACTIONS": {
+      "(.*)(\\d+)(\\s*)$": "\\g<0> degrees F"
+    }
+  }
+}
